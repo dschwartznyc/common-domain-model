@@ -118,15 +118,17 @@ steps:
         shell: sh
         commands:
           - export PYTHONDONTWRITEBYTECODE=1
+          - python3 -m venv .pyenv
+          - source .pyenv/bin/activate
           - python3 -m pip install "pydantic>=2.6.1,<2.10"
-          - python3 -m pip install jsonpickle
           - python3 -m pip install ./rosetta-source/target/classes/cdm/python/runtime/rosetta_runtime-2.1.0-py3-none-any.whl
           - |-
             python3 -m pip wheel --no-deps --only-binary :all: --wheel-dir ./rosetta-source/target/classes/cdm/python ./rosetta-source/target/classes/cdm/python
           - python3 -m pip install ./rosetta-source/target/classes/cdm/python/python_cdm-*-py3-none-any.whl
           - python3 -m pip install pytest
-#          - pytest -p no:cacheprovider ./cdm-python/test/
-          
+          - pytest -p no:cacheprovider ./cdm-python/test/
+          - deactivate
+          - rm -rf .pyenv          
   DeployDaml:
     stage: 'build'
     title: DAML deploy
